@@ -1,0 +1,61 @@
+<!doctype html>
+<!-- screen-guide caption and title cards. Query: m=title|bg|outro, layout=landscape|portrait,
+     n (number line on title cards), badge (step badge on captions), t (title), s (subtitle),
+     u (url chip, outro), q (quote line, outro), theme colours bg ink sub dark light soft accent,
+     fonts ft (titles) fb (body) as Google Fonts family names, dir (rtl|ltr, default from the text),
+     icon (none|sprout), logo (image URL shown on title/outro cards). -->
+<html><head><meta charset="utf-8">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link id="fonts" rel="stylesheet">
+<style>
+  html, body { margin: 0; }
+  .page { position: relative; overflow: hidden; }
+  .center { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+  .n { color: var(--accent); font-weight: 700; }
+  .chip { padding: .35em 1em; border-radius: .45em; background: var(--accent); color: var(--dark); font-weight: 700; direction: ltr; }
+  .shadow { position: absolute; box-shadow: 0 18px 50px rgba(30,40,25,.20), 0 0 0 2px rgba(0,0,0,.06); }
+  .badge { flex: none; border-radius: 50%; background: var(--dark); color: var(--accent); display: grid; place-items: center; font-weight: 700; }
+</style></head>
+<body><div id="root"></div>
+<script>
+const q = new URLSearchParams(location.search);
+const v = (k, d) => q.get(k) || d;
+const T = { bg: v("bg", "#F4F4F1"), ink: v("ink", "#1F2937"), accent: v("accent", "#F59E0B"), sub: v("sub", "#6B7280"), dark: v("dark", "#111827"), light: v("light", "#F9FAFB"), soft: v("soft", "#D1D5DB") };
+const FT = v("ft", "IBM Plex Sans Arabic"), FB = v("fb", "IBM Plex Sans Arabic");
+document.getElementById("fonts").href = `https://fonts.googleapis.com/css2?family=${encodeURIComponent(FT)}:wght@400;700&family=${encodeURIComponent(FB)}:wght@400;600;700&display=block`;
+const land = v("layout", "landscape") !== "portrait", W = land ? 1920 : 1080, H = land ? 1080 : 1920;
+const m = v("m", "bg"), n = v("n", ""), t = v("t", ""), s = v("s", ""), u = v("u", ""), qt = v("q", "");
+const dir = v("dir", /[\u0590-\u08FF]/.test(t + s + n) ? "rtl" : "ltr"); // Arabic/Hebrew text -> right to left
+const logo = v("logo", "");
+const esc = (x) => x.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]));
+const sprout = (px) => `<svg width="${px}" height="${px}" viewBox="0 0 24 24" style="fill:none;stroke:${T.accent};stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round"><path d="M12 21V10"/><path d="M12 15c-3.5 0-6-2.2-6-6 3.5 0 6 2.2 6 6z"/><path d="M12 11c0-4 2.8-7 7-7 0 4-2.8 7-7 7z"/></svg>`;
+document.documentElement.style.cssText = Object.entries(T).map(([k, c]) => `--${k}:${c}`).join(";");
+const root = document.getElementById("root");
+const base = `width:${W}px;height:${H}px;font-family:'${FB}',sans-serif;`;
+if (m === "title" || m === "outro") {
+  root.innerHTML = `<div dir="${dir}" class="page center" style="${base}background:${T.dark};color:${T.light};gap:${land ? 26 : 34}px">
+    ${logo ? `<img src="${esc(logo)}" style="max-height:${land ? 140 : 180}px;max-width:60%">` : v("icon", "none") === "sprout" ? sprout(land ? 120 : 160) : ""}
+    ${n ? `<div class="n" style="font-size:${land ? 34 : 40}px">${esc(n)}</div>` : ""}
+    <div style="font-family:'${FT}',serif;font-weight:700;font-size:${land ? 96 : 100}px;line-height:1.3;padding:0 70px">${esc(t)}</div>
+    ${s ? `<div style="font-size:${land ? 40 : 42}px;color:${T.soft};max-width:${W - 200}px;line-height:1.6">${esc(s)}</div>` : ""}
+    ${u ? `<div class="chip" style="font-size:${land ? 44 : 50}px;margin-top:16px">${esc(u)}</div>` : ""}
+    ${qt ? `<div style="position:absolute;bottom:${land ? 80 : 150}px;inset-inline:90px;font-family:'${FT}',serif;font-size:${land ? 36 : 38}px;line-height:1.8;color:${T.soft}">${esc(qt)}</div>` : ""}
+  </div>`;
+} else if (land) {
+  root.innerHTML = `<div dir="${dir}" class="page" style="${base}background:${T.bg}">
+    <div style="position:absolute;top:0;inset-inline:0;height:150px;display:flex;align-items:center;gap:28px;padding:0 160px">
+      ${n ? `<div class="badge" style="width:84px;height:84px;font-size:44px">${esc(n)}</div>` : ""}
+      <div style="display:flex;flex-direction:column;gap:2px">
+        <div style="font-family:'${FT}',serif;font-weight:700;font-size:56px;color:${T.ink};line-height:1.2">${esc(t)}</div>
+        ${s ? `<div style="font-size:30px;color:${T.sub}">${esc(s)}</div>` : ""}
+      </div></div>
+    <div class="shadow" style="left:160px;top:160px;width:1600px;height:900px;border-radius:18px"></div></div>`;
+} else {
+  root.innerHTML = `<div dir="${dir}" class="page" style="${base}background:${T.bg}">
+    <div class="center" style="position:absolute;top:0;inset-inline:0;height:320px;gap:6px">
+      <div style="font-family:'${FT}',serif;font-weight:700;font-size:76px;color:${T.ink};line-height:1.25">${esc(t)}</div>
+      ${s ? `<div style="font-size:40px;color:${T.sub};padding:0 60px">${esc(s)}</div>` : ""}</div>
+    <div class="shadow" style="left:60px;top:320px;width:960px;height:1560px;border-radius:44px"></div></div>`;
+}
+Promise.all([document.fonts.ready, ...[...document.images].map((i) => i.complete ? 1 : new Promise((r) => { i.onload = i.onerror = r; }))]).then(() => { document.body.dataset.ready = "1"; });
+</script></body></html>

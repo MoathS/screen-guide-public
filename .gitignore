@@ -1,0 +1,16 @@
+# Jobs, renders and downloads never belong in the repo
+node_modules/
+*.mp4
+*.webm
+*.wav
+*.jpg
+*.png
+!skill/screen-guide/assets/*.png
+work/
+out/
+clips/
+cards/
+build/
+profiles/
+.env
+.env.*
