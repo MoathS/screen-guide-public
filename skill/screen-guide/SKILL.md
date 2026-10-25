@@ -27,10 +27,18 @@ Settle only what changes the output, and use the defaults for the rest:
 | Voice | none; on-screen captions carry the story. Suggest the user records a voiceover later if wanted |
 | Data shown | see Privacy below; decide this before recording, not after |
 
-**Give an estimate with the brief.** Once the plan has lengths, run
-`node $SG/estimate.js <landscape|portrait> <calm|busy> <seconds per video…>` and tell the
-user the expected file sizes, the temporary disk space and the recording time. It is
-based on measured rates; `busy` means scrolling, animation or dense drawings on screen.
+**Checkpoint before recording: size and disk space.** As soon as the brief and the
+scene plan give each video a length, and before anything is recorded or composed:
+1. Run `node $SG/estimate.js <landscape|portrait> <calm|busy> <seconds per video…> --dir "$JOB"`
+   (`busy` = scrolling, animation or dense drawings on screen; rates are measured, not guessed).
+2. Tell the requester, in their language: the expected size of each delivered file, the
+   temporary working space, the free space where the job is saved, and the recording time.
+3. Act on its verdict. **OK**: go on. **TIGHT**: say so, and clear `clips/` and `build/`
+   as each video is approved. **NOT ENOUGH SPACE** (exit status 2): do not start. Offer
+   shorter or split videos, recording in parts with clean-ups in between, another folder,
+   or freeing space, and wait for the user's choice.
+Re-run it if the plan grows. A full disk mid-recording loses the clip and can disturb
+other services sharing that disk.
 
 **Privacy, decided up front.** Treat every frame as publishable.
 - Never record systems the user describes as confidential (customer, financial, health or employer data). Say why.

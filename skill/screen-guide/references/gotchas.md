@@ -59,5 +59,7 @@
   uses `$SG_FFMPEG`, then `ffmpeg` on PATH, then (Linux) a cached static build.
 - Docker Desktop (macOS/Windows) has no host networking for containers: set
   `SG_NETWORK=bridge` and address local apps as `host.docker.internal`.
+- Pooled or union filesystems (Unraid `/mnt/user`, mergerfs) report the free space of the
+  whole pool. Point `estimate.js --dir` at the disk that really holds the job folder.
 - Secure cookies are not stored over plain http (other than localhost): record
   logged-in flows over https.
