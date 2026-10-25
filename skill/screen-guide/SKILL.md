@@ -27,6 +27,11 @@ Settle only what changes the output, and use the defaults for the rest:
 | Voice | none; on-screen captions carry the story. Suggest the user records a voiceover later if wanted |
 | Data shown | see Privacy below; decide this before recording, not after |
 
+**Give an estimate with the brief.** Once the plan has lengths, run
+`node $SG/estimate.js <landscape|portrait> <calm|busy> <seconds per video…>` and tell the
+user the expected file sizes, the temporary disk space and the recording time. It is
+based on measured rates; `busy` means scrolling, animation or dense drawings on screen.
+
 **Privacy, decided up front.** Treat every frame as publishable.
 - Never record systems the user describes as confidential (customer, financial, health or employer data). Say why.
 - Phone numbers, one-time codes, 2FA secrets, recovery codes, login links/tokens and real people's emails must never be visible. `lib.js` blurs phone and one-time-code inputs, `otpauth:` links, `.sg-blur`/`[data-sg-blur]` elements and any run of 7+ digits by default. Add the app's own secret elements with the `blur:` option.
