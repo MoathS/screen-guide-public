@@ -14,12 +14,15 @@ Reply in the user's language. Captions go in the language the video is for.
 
 ## 1. Agree the brief (one short message, then go)
 
+There is no length limit - a video is as long as its scenes. Never trim a walkthrough to
+fit a promo-style 20-30 s; cut waiting and repetition, not steps the viewer needs.
+
 Settle only what changes the output, and use the defaults for the rest:
 
 | Question | Default |
 |---|---|
 | Audience and where it will be watched | phones/social → `portrait`; training/desktop → `landscape` |
-| One video or a series | training → a series with one task per video (60–90 s each beats one 10-minute video) |
+| One video or a series | *suggest* splitting long material into parts, one task each (easier to follow and to re-record) - but it is the user's call: if they want one long video, make one long video |
 | Sound | soft effects only (taps, typing, a breath at cuts); a silent copy is always delivered too |
 | Voice | none; on-screen captions carry the story. Suggest the user records a voiceover later if wanted |
 | Data shown | see Privacy below; decide this before recording, not after |
