@@ -10,7 +10,7 @@ Ask Claude for something like *"make a video showing how an admin approves a req
 - soft UI sound effects;
 - a silent copy and a cover image.
 
-There is no length limit, so it suits how-to series, onboarding and admin guides, not just 20-second promos.
+There is no length limit, so it suits how-to series, onboarding and admin guides, not just 20-second promos. Long videos simply take longer: recording runs at about a third of real time (a 1-minute scene takes ~3-4 minutes to capture), and frames need disk space (roughly 5-10 MB per recorded second until you clear `clips/`).
 
 ## Features
 

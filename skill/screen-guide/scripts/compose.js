@@ -13,8 +13,11 @@ const only = process.argv.slice(4);
 const FF = execFileSync(path.join(__dirname, "get-ffmpeg.sh")).toString().trim();
 const CACHE = process.env.SG_CACHE || path.join(require("os").homedir(), ".cache", "screen-guide");
 // -nostdin and a hard time limit (SIGKILL: a spinning filter graph ignores SIGTERM), so a
-// stuck ffmpeg fails loudly instead of living on as an orphan at 100% CPU.
-const ff = (...a) => execFileSync(FF, ["-nostdin", "-loglevel", "error", "-y", ...a], { stdio: ["ignore", "inherit", "inherit"], timeout: 600000, killSignal: "SIGKILL" });
+// stuck ffmpeg fails loudly instead of living on as an orphan at 100% CPU. The limit is
+// per ffmpeg call, not per video: SG_FF_TIMEOUT minutes (default 120) - raise it for very
+// long videos on slow machines.
+const FF_TIMEOUT = (+process.env.SG_FF_TIMEOUT || 120) * 60000;
+const ff = (...a) => execFileSync(FF, ["-nostdin", "-loglevel", "error", "-y", ...a], { stdio: ["ignore", "inherit", "inherit"], timeout: FF_TIMEOUT, killSignal: "SIGKILL" });
 const dur = (f) => { let o = ""; try { execFileSync(FF, ["-i", f], { stdio: "pipe" }); } catch (e) { o = String(e.stderr); } const m = o.match(/Duration: (\d+):(\d+):([\d.]+)/); return +m[1] * 3600 + +m[2] * 60 + +m[3]; };
 const r3 = (x) => Math.round(x * 1000) / 1000;
 const land = (spec.layout || "landscape") !== "portrait";
