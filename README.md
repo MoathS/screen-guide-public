@@ -2,7 +2,7 @@
 
 **Record real walkthrough and training videos of any web app, with Claude Code.**
 
-Ask Claude for something like *"make a video showing how an admin approves a request"* or «سوّ مقطع يشرح طريقة البحث». The skill drives your live site in a headless browser and records it at full resolution. It then composes finished videos:
+Ask Claude for something like *"make a video showing how an admin approves a request"*. The skill drives your live site in a headless browser and records it at full resolution. It then composes finished videos:
 
 - smooth 30 fps;
 - visible taps;
