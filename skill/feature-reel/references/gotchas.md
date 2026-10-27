@@ -49,16 +49,16 @@
   form, and the sidebar email.
 - Lists that open on everyone (members, statistics) can show people the video
   should not. Hide the table until the search has run (`s.css("main table{visibility:hidden}")`, then `s.uncss()`).
-- Never log secrets. Pass them via `SG_ENV` names and print only "link obtained" etc.
+- Never log secrets. Pass them via `FR_ENV` names and print only "link obtained" etc.
 
 ## Environment
 - The puppeteer image already contains Chrome and puppeteer: no npm install. A local
   dev server (e.g. Next.js) can run in the same image with the app's `node_modules`
   mounted read-only; stop it when done.
 - ffmpeg runs on the host only (`clip.sh`, `compose.js`, `sheet.sh`). `get-ffmpeg.sh`
-  uses `$SG_FFMPEG`, then `ffmpeg` on PATH, then (Linux) a cached static build.
+  uses `$FR_FFMPEG`, then `ffmpeg` on PATH, then (Linux) a cached static build.
 - Docker Desktop (macOS/Windows) has no host networking for containers: set
-  `SG_NETWORK=bridge` and address local apps as `host.docker.internal`.
+  `FR_NETWORK=bridge` and address local apps as `host.docker.internal`.
 - Pooled or union filesystems (Unraid `/mnt/user`, mergerfs) report the free space of the
   whole pool. Point `estimate.js --dir` at the disk that really holds the job folder.
 - Secure cookies are not stored over plain http (other than localhost): record

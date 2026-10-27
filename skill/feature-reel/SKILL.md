@@ -1,11 +1,12 @@
 ---
-name: screen-guide
-description: Record real, polished walkthrough and training videos of a web app - any length, landscape 1920×1080 or vertical 1080×1920 - by driving the live site in a headless browser. Smooth 30 fps at full resolution, visible taps, captions in the site's own fonts and colours (Arabic/RTL and LTR), soft UI sound effects instead of music, automatic blurring of phone numbers and one-time codes, and a read-only guard for visits. Use this whenever the user wants a tutorial, walkthrough, how-to, product demo, screen recording, onboarding or training video, admin guide, "شرح" / "دليل" / "مقطع يوضح طريقة…", or a video showing how a feature of their site works - or wants an earlier walkthrough re-recorded after a UI change - even if they don't say "screen recording". Prefer it over promo/launch-video skills when the video explains how to do something or must run longer than ~25 seconds.
+name: feature-reel
+description: Turn a web app into polished videos recorded from the real, live site - feature showcases that present what a site offers, plus walkthroughs, how-tos and training - at any length, landscape 1920×1080 or vertical 1080×1920. Drives the site in a headless browser for smooth 30 fps at full resolution, with visible taps, captions in the site's own fonts and colours (Arabic/RTL and LTR), soft UI sound effects instead of music, automatic blurring of phone numbers and one-time codes, and a read-only guard for visits. Use this whenever the user wants to show off or present features of their site or app, a feature reel, product demo, showcase, tutorial, walkthrough, screen recording, onboarding or training video, admin guide, «عرض مزايا الموقع» / «شرح» / «دليل» / a video showing how something works - or wants an earlier one re-recorded after a UI change - even if they don't say "screen recording". Prefer it over promo/launch-video skills whenever the video must show the real UI in use or run longer than ~25 seconds.
 ---
 
-# screen-guide
+# feature-reel
 
-Turn "show how X works" into finished videos recorded from the real app. The heavy
+Turn "show what this site offers" or "show how X works" into finished videos recorded
+from the real app: feature showcases, walkthroughs and training. The heavy
 lifting is in `scripts/`. Write a short clip script per scene, record it, check its
 frames, write one spec, and compose. Read `references/gotchas.md` before the first
 recording in a session, because every item in it broke a real recording once.
@@ -29,7 +30,7 @@ Settle only what changes the output, and use the defaults for the rest:
 
 **Checkpoint before recording: size and disk space.** As soon as the brief and the
 scene plan give each video a length, and before anything is recorded or composed:
-1. Run `node $SG/estimate.js <landscape|portrait> <calm|busy> <seconds per video…> --dir "$JOB"`
+1. Run `node $FR/estimate.js <landscape|portrait> <calm|busy> <seconds per video…> --dir "$JOB"`
    (`busy` = scrolling, animation or dense drawings on screen; rates are measured, not guessed).
 2. Tell the requester, in their language: the expected size of each delivered file, the
    temporary working space, the free space where the job is saved, and the recording time.
@@ -42,7 +43,7 @@ other services sharing that disk.
 
 **Privacy, decided up front.** Treat every frame as publishable.
 - Never record systems the user describes as confidential (customer, financial, health or employer data). Say why.
-- Phone numbers, one-time codes, 2FA secrets, recovery codes, login links/tokens and real people's emails must never be visible. `lib.js` blurs phone and one-time-code inputs, `otpauth:` links, `.sg-blur`/`[data-sg-blur]` elements and any run of 7+ digits by default. Add the app's own secret elements with the `blur:` option.
+- Phone numbers, one-time codes, 2FA secrets, recovery codes, login links/tokens and real people's emails must never be visible. `lib.js` blurs phone and one-time-code inputs, `otpauth:` links, `.fr-blur`/`[data-fr-blur]` elements and any run of 7+ digits by default. Add the app's own secret elements with the `blur:` option.
 - Real people's names: ask whether real data is fine or a staging/fictional copy should be used. A list that opens on unrelated people can stay hidden until a search runs (`s.css(...)`, then `s.uncss()`).
 
 **Where to record.**
@@ -63,20 +64,20 @@ steps, the caption for each beat, and what must be cleaned up afterwards.
 ## 3. Set up a job
 
 ```
-JOB=~/screen-guide-jobs/<topic>-<YYYY-MM-DD>   # anywhere outside a git repo
+JOB=~/feature-reel-jobs/<topic>-<YYYY-MM-DD>   # anywhere outside a git repo
 mkdir -p "$JOB/scripts"
-SG=<this skill folder>/scripts                 # e.g. ~/.claude/skills/screen-guide/scripts
+FR=<this skill folder>/scripts                 # e.g. ~/.claude/skills/feature-reel/scripts
 ```
-- `run.sh` runs a script in a throwaway puppeteer container (`docker run --rm`), with this skill at `/sg` and the job at `/work`.
-- Host networking is the default. On Docker Desktop, set `SG_NETWORK=bridge` and use `host.docker.internal` instead of `127.0.0.1`.
-- Pass secrets by **name**: `export GATE_PW=...; SG_ENV="GATE_PW" $SG/run.sh ...`. Read them from files with `$(cat file)` so they never appear in output, and never write them into the job's scripts.
+- `run.sh` runs a script in a throwaway puppeteer container (`docker run --rm`), with this skill at `/fr` and the job at `/work`.
+- Host networking is the default. On Docker Desktop, set `FR_NETWORK=bridge` and use `host.docker.internal` instead of `127.0.0.1`.
+- Pass secrets by **name**: `export GATE_PW=...; FR_ENV="GATE_PW" $FR/run.sh ...`. Read them from files with `$(cat file)` so they never appear in output, and never write them into the job's scripts.
 
 ## 4. Record one clip per scene
 
 ```js
 // $JOB/scripts/A.js
-const sg = require("/sg/scripts/lib");
-sg.record("A", { url: "https://example.com/", layout: "portrait", guard: true }, async (s) => {
+const fr = require("/fr/scripts/lib");
+fr.record("A", { url: "https://example.com/", layout: "portrait", guard: true }, async (s) => {
   await s.wait(1000);
   await s.tap("#search", { mark: "search" });   // ripple + click, logged for effects
   await s.type("#search", "blue shoes");        // React-safe typing; each key logged
@@ -86,9 +87,9 @@ sg.record("A", { url: "https://example.com/", layout: "portrait", guard: true },
 });
 ```
 ```
-$SG/run.sh "$JOB" scripts/A.js        # frames + clips/A.marks.json
-$SG/clip.sh "$JOB" A                  # clips/A.mp4 (on the host)
-$SG/sheet.sh "$JOB/clips/A.mp4" /tmp/A.png 0.5 2 4 6 8 10   # then look at the PNG
+$FR/run.sh "$JOB" scripts/A.js        # frames + clips/A.marks.json
+$FR/clip.sh "$JOB" A                  # clips/A.mp4 (on the host)
+$FR/sheet.sh "$JOB/clips/A.mp4" /tmp/A.png 0.5 2 4 6 8 10   # then look at the PNG
 ```
 The API is documented at the top of `lib.js`; read it once.
 - **Actions:** `tap`, `tapGo`, `type`, `scroll`, `go`, `at`, `settled`, `css`/`uncss`, `mark`, `webauthnOff`.
@@ -129,8 +130,8 @@ module.exports = {
 };
 ```
 ```
-$SG/run.sh "$JOB" /sg/scripts/cards.js video.js   # cards in the theme (container)
-node "$SG/compose.js" "$JOB" video.js [videoId…]  # host: node + ffmpeg
+$FR/run.sh "$JOB" /fr/scripts/cards.js video.js   # cards in the theme (container)
+node "$FR/compose.js" "$JOB" video.js [videoId…]  # host: node + ffmpeg
 ```
 Each video ends up in `out/<id>/`: `video.mp4`, `video-silent.mp4` and `cover.jpg`.
 

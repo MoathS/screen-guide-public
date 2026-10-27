@@ -1,8 +1,8 @@
-# screen-guide
+# feature-reel
 
-**Record real walkthrough and training videos of any web app, with Claude Code.**
+**Turn your web app into polished videos recorded from the real site: feature showcases, walkthroughs and training. With Claude Code.**
 
-Ask Claude for something like *"make a video showing how an admin approves a request"*. The skill drives your live site in a headless browser and records it at full resolution. It then composes finished videos:
+Ask Claude for something like *"make a short reel of our booking features"* or *"make a video showing how an admin approves a request"*. The skill drives your live site in a headless browser and records it at full resolution. It then composes finished videos:
 
 - smooth 30 fps;
 - visible taps;
@@ -10,7 +10,7 @@ Ask Claude for something like *"make a video showing how an admin approves a req
 - soft UI sound effects;
 - a silent copy and a cover image.
 
-There is no length limit, so it suits how-to series, onboarding and admin guides, not just 20-second promos. Long videos simply take longer: recording runs at about a third of real time (a 1-minute scene takes ~3-4 minutes to capture), and frames need disk space (roughly 5-10 MB per recorded second until you clear `clips/`).
+There is no length limit, so it suits feature reels as well as how-to series, onboarding and admin guides, not just 20-second promos. Long videos simply take longer: recording runs at about a third of real time (a 1-minute scene takes ~3-4 minutes to capture), and frames need disk space (roughly 5-10 MB per recorded second until you clear `clips/`).
 
 ## Features
 
@@ -29,15 +29,15 @@ There is no length limit, so it suits how-to series, onboarding and admin guides
 - [Claude Code](https://code.claude.com) (or any agent that loads `SKILL.md` skills)
 - Docker
 - Node.js 18+ on the host
-- ffmpeg (on PATH, or `SG_FFMPEG=/path/to/ffmpeg`; fetched automatically on Linux x86_64/arm64)
+- ffmpeg (on PATH, or `FR_FFMPEG=/path/to/ffmpeg`; fetched automatically on Linux x86_64/arm64)
 - Internet access for the cards' Google Fonts
 
 ## Install
 
 ```bash
-git clone <repo-url> screen-guide
-./screen-guide/install.sh            # for all projects: ~/.claude/skills/screen-guide
-./screen-guide/install.sh ~/my-app   # or for one project: ~/my-app/.claude/skills/screen-guide
+git clone <repo-url> feature-reel
+./feature-reel/install.sh            # for all projects: ~/.claude/skills/feature-reel
+./feature-reel/install.sh ~/my-app   # or for one project: ~/my-app/.claude/skills/feature-reel
 ```
 
 Restart Claude Code. The skill triggers on requests for walkthroughs, tutorials, demos, admin guides, «شرح», «دليل» and similar.
@@ -54,8 +54,8 @@ video.js spec --cards.js--> cards/*.png                    (container)
 A clip script is a few lines:
 
 ```js
-const sg = require("/sg/scripts/lib");
-sg.record("A", { url: "https://example.com/", layout: "portrait", guard: true }, async (s) => {
+const fr = require("/fr/scripts/lib");
+fr.record("A", { url: "https://example.com/", layout: "portrait", guard: true }, async (s) => {
   await s.tap("input[type=search]", { mark: "search" });
   await s.type("input[type=search]", "blue shoes");
   await s.tap(".result", { mark: "pick" });
@@ -72,15 +72,15 @@ See [`examples/`](examples) for a full vertical example and a logged-in landscap
 ## Running it by hand
 
 ```bash
-SG=~/.claude/skills/screen-guide/scripts; JOB=~/screen-guide-jobs/demo; mkdir -p $JOB/scripts
+FR=~/.claude/skills/feature-reel/scripts; JOB=~/feature-reel-jobs/demo; mkdir -p $JOB/scripts
 cp examples/clip.example.js $JOB/scripts/A.js; cp examples/video.example.js $JOB/video.js   # edit both
-$SG/run.sh $JOB scripts/A.js && $SG/clip.sh $JOB A
-$SG/sheet.sh $JOB/clips/A.mp4 /tmp/A.png 1 3 5 7       # check the frames
-$SG/run.sh $JOB /sg/scripts/cards.js video.js
-node $SG/compose.js $JOB video.js                       # -> $JOB/out/search-product/
+$FR/run.sh $JOB scripts/A.js && $FR/clip.sh $JOB A
+$FR/sheet.sh $JOB/clips/A.mp4 /tmp/A.png 1 3 5 7       # check the frames
+$FR/run.sh $JOB /fr/scripts/cards.js video.js
+node $FR/compose.js $JOB video.js                       # -> $JOB/out/search-product/
 ```
 
-On Docker Desktop (macOS/Windows), set `SG_NETWORK=bridge` and use `host.docker.internal` for apps running on your machine.
+On Docker Desktop (macOS/Windows), set `FR_NETWORK=bridge` and use `host.docker.internal` for apps running on your machine.
 
 ## Responsible use
 

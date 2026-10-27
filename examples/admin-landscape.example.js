@@ -1,9 +1,9 @@
 // Example: a logged-in admin flow on a staging site behind HTTP basic auth (landscape).
 //   export STAGING_PW=$(cat ~/secrets/staging-pw)   # never hard-code it
-//   SG_ENV="STAGING_PW" $SG/run.sh $JOB scripts/admin.js
+//   FR_ENV="STAGING_PW" $FR/run.sh $JOB scripts/admin.js
 // The first run signs in inside the clip (persistent profile "admin"); later clips reuse it.
-const sg = require("/sg/scripts/lib");
-sg.record("admin-add", {
+const fr = require("/fr/scripts/lib");
+fr.record("admin-add", {
   url: "https://staging.example.com/admin/members",
   layout: "landscape",
   basicAuth: { user: "staging", passEnv: "STAGING_PW" },

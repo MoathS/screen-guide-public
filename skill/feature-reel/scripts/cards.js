@@ -22,7 +22,7 @@ for (const [id, v] of Object.entries(spec.videos)) {
   await p.setViewport({ width: land ? 1920 : 1080, height: land ? 1080 : 1920, deviceScaleFactor: 1 });
   for (const [name, q] of list) {
     const qs = new URLSearchParams({ layout, ...theme, ...Object.fromEntries(Object.entries(q).filter(([, x]) => x != null).map(([k, x]) => [k, String(x)])) });
-    await p.goto(`file:///sg/assets/card.html?${qs}`, { waitUntil: "networkidle0", timeout: 60000 });
+    await p.goto(`file:///fr/assets/card.html?${qs}`, { waitUntil: "networkidle0", timeout: 60000 });
     await p.waitForSelector("body[data-ready]", { timeout: 30000 });
     await new Promise((r) => setTimeout(r, 150));
     await p.screenshot({ path: `${OUT}/${name}.png` });

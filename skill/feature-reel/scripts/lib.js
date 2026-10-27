@@ -1,12 +1,12 @@
-// screen-guide recording library. Runs inside the puppeteer container (see run.sh):
-//   /sg    the skill folder (read-only); this file is /sg/scripts/lib.js
+// feature-reel recording library. Runs inside the puppeteer container (see run.sh):
+//   /fr    the skill folder (read-only); this file is /fr/scripts/lib.js
 //   /work  the job folder: clips/, profiles/, scripts/
 // Frames and their timing are written to /work/clips/<name>/; clip.sh / compose.js
 // turn them into video on the host, so the container needs no ffmpeg.
 //
 // A clip script:
-//   const sg = require("/sg/scripts/lib");
-//   sg.record("A", { url: "https://example.com/", layout: "portrait" }, async (s) => {
+//   const fr = require("/fr/scripts/lib");
+//   fr.record("A", { url: "https://example.com/", layout: "portrait" }, async (s) => {
 //     await s.wait(800); await s.tap("a.signup"); await s.type("#name", "سلمان");
 //   });
 //
@@ -31,9 +31,9 @@ const LAYOUTS = {
   "landscape-zoom": { w: 800, h: 450, dpr: 2, mobile: false },     // small pages, big text
 };
 // Blurred by default: phone and one-time-code inputs, otpauth links, and anything a
-// page or the clip script marks with .sg-blur / [data-sg-blur]. Add an app's own
+// page or the clip script marks with .fr-blur / [data-fr-blur]. Add an app's own
 // secret elements (TOTP secret text, recovery codes, a requester's details) with `blur:`.
-const BLUR_CSS = `input[type=tel], input[autocomplete="tel"], input[autocomplete="one-time-code"], a[href^="otpauth:"], .sg-blur, [data-sg-blur] { filter: blur(9px) !important; }`;
+const BLUR_CSS = `input[type=tel], input[autocomplete="tel"], input[autocomplete="one-time-code"], a[href^="otpauth:"], .fr-blur, [data-fr-blur] { filter: blur(9px) !important; }`;
 
 let SLOW = 1;
 const wait = (ms) => new Promise((r) => setTimeout(r, ms * SLOW));
@@ -75,7 +75,7 @@ function slowTimeInit(K) {
 
 function pageInit({ css, hide, blurDigits, devOverlay, tapColor }) {
   // A soft ripple where the simulated finger touches.
-  window.__sgTap = (x, y) => {
+  window.__frTap = (x, y) => {
     const d = document.createElement("div");
     d.style.cssText = `position:fixed;left:${x - 26}px;top:${y - 26}px;width:52px;height:52px;border-radius:50%;background:${tapColor}73;border:2px solid ${tapColor}e6;z-index:2147483647;pointer-events:none;transform:scale(.4);opacity:1;transition:transform .45s ease-out,opacity .45s ease-out`;
     document.body.appendChild(d);
@@ -84,16 +84,16 @@ function pageInit({ css, hide, blurDigits, devOverlay, tapColor }) {
   };
   if (devOverlay === false) new MutationObserver(() => document.querySelectorAll("nextjs-portal").forEach((e) => e.remove())).observe(document, { childList: true, subtree: true });
   document.addEventListener("DOMContentLoaded", () => {
-    const s = document.createElement("style"); s.id = "sg-style";
-    s.textContent = css + (hide.length ? `\n${hide.join(",")} { display: none !important; }` : "") + "\n.sg-digits { filter: blur(8px) !important; }";
+    const s = document.createElement("style"); s.id = "fr-style";
+    s.textContent = css + (hide.length ? `\n${hide.join(",")} { display: none !important; }` : "") + "\n.fr-digits { filter: blur(8px) !important; }";
     document.head.appendChild(s);
     if (!blurDigits) return;
     // Any run of 7+ digits in page text (a phone number, an ID) is wrapped and blurred.
     const RX = /[+]?[0-9٠-٩][0-9٠-٩ ]{6,}[0-9٠-٩]/;
     const scan = (root) => {
       const tw = document.createTreeWalker(root, NodeFilter.SHOW_TEXT), hits = [];
-      for (let n; (n = tw.nextNode());) if (RX.test(n.nodeValue) && !n.parentElement?.closest(".sg-digits, script, style")) hits.push(n);
-      for (const n of hits) { const m = n.nodeValue.match(RX), r = n.splitText(m.index); r.splitText(m[0].length); const sp = document.createElement("span"); sp.className = "sg-digits"; r.replaceWith(sp); sp.appendChild(r); }
+      for (let n; (n = tw.nextNode());) if (RX.test(n.nodeValue) && !n.parentElement?.closest(".fr-digits, script, style")) hits.push(n);
+      for (const n of hits) { const m = n.nodeValue.match(RX), r = n.splitText(m.index); r.splitText(m[0].length); const sp = document.createElement("span"); sp.className = "fr-digits"; r.replaceWith(sp); sp.appendChild(r); }
     };
     scan(document.body);
     new MutationObserver((ms) => ms.forEach((m) => m.addedNodes.forEach((n) => { if (n.nodeType === 1) scan(n); else if (n.nodeType === 3 && n.parentElement) scan(n.parentElement); }))).observe(document.body, { childList: true, subtree: true, characterData: true });
@@ -184,7 +184,7 @@ async function record(name, o, steps) {
     /** Ripple + click (element click: no coordinate drift, no hover menus). */
     tap: async (sel, opt = {}) => {
       const { el, bx } = await box(sel);
-      await p.evaluate((x, y) => window.__sgTap(x, y), bx.x + bx.width / 2, bx.y + bx.height / 2);
+      await p.evaluate((x, y) => window.__frTap(x, y), bx.x + bx.width / 2, bx.y + bx.height / 2);
       log.taps.push(now()); if (opt.mark) mark(opt.mark);
       await wait(120);
       await el.evaluate((e) => { e.focus({ preventScroll: true }); e.click(); });
@@ -192,7 +192,7 @@ async function record(name, o, steps) {
     /** Ripple, then follow the link's href (optionally rewritten), as a full load. */
     tapGo: async (sel, rewrite) => {
       const { el, bx } = await box(sel);
-      await p.evaluate((x, y) => window.__sgTap(x, y), bx.x + bx.width / 2, bx.y + bx.height / 2);
+      await p.evaluate((x, y) => window.__frTap(x, y), bx.x + bx.width / 2, bx.y + bx.height / 2);
       log.taps.push(now()); await wait(150);
       let href = await el.evaluate((a) => a.href); if (rewrite) href = rewrite(new URL(href)).toString();
       await go(href);
@@ -221,8 +221,8 @@ async function record(name, o, steps) {
     /** Wait (real time) until location matches, e.g. after a client-side navigation. */
     at: (prefix) => p.waitForFunction((x) => (location.pathname + location.search).startsWith(x), { timeout: 60000 }, prefix),
     settled: async () => { await p.evaluate(() => document.fonts.ready); await wait(800); },
-    css: (text) => p.evaluate((t) => { const s = document.createElement("style"); s.className = "sg-extra"; s.textContent = t; document.head.appendChild(s); }, text),
-    uncss: () => p.evaluate(() => document.querySelectorAll("style.sg-extra").forEach((s) => s.remove())),
+    css: (text) => p.evaluate((t) => { const s = document.createElement("style"); s.className = "fr-extra"; s.textContent = t; document.head.appendChild(s); }, text),
+    uncss: () => p.evaluate(() => document.querySelectorAll("style.fr-extra").forEach((s) => s.remove())),
     webauthnOff: async () => { if (auth) { await anim.send("WebAuthn.removeVirtualAuthenticator", { authenticatorId: auth }); await anim.send("WebAuthn.disable"); auth = null; } },
   };
   let failed = null;

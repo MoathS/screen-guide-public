@@ -5,7 +5,7 @@ node_modules/
 *.wav
 *.jpg
 *.png
-!skill/screen-guide/assets/*.png
+!skill/feature-reel/assets/*.png
 work/
 out/
 clips/

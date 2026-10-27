@@ -1,11 +1,11 @@
 #!/bin/bash
-# Installs the screen-guide skill for Claude Code.
-#   ./install.sh              -> ~/.claude/skills/screen-guide (all projects)
-#   ./install.sh PROJECT_DIR  -> PROJECT_DIR/.claude/skills/screen-guide (that project only)
+# Installs the feature-reel skill for Claude Code.
+#   ./install.sh              -> ~/.claude/skills/feature-reel (all projects)
+#   ./install.sh PROJECT_DIR  -> PROJECT_DIR/.claude/skills/feature-reel (that project only)
 # The skill is linked, not copied, so `git pull` in this clone updates it.
 set -euo pipefail
-SRC="$(cd "$(dirname "$0")/skill/screen-guide" && pwd)"
-BASE="${1:-$HOME}"; DEST="$BASE/.claude/skills/screen-guide"
+SRC="$(cd "$(dirname "$0")/skill/feature-reel" && pwd)"
+BASE="${1:-$HOME}"; DEST="$BASE/.claude/skills/feature-reel"
 mkdir -p "$BASE/.claude/skills"
 if [ -e "$DEST" ] && [ ! -L "$DEST" ]; then echo "refusing: $DEST exists and is not a link - move it aside first" >&2; exit 1; fi
 ln -sfn "$SRC" "$DEST"

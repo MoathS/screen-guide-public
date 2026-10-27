@@ -1,5 +1,5 @@
 // Example spec for the clip above: one vertical video, two captions, a title and an outro.
-// Run: $SG/run.sh $JOB /sg/scripts/cards.js video.js && node $SG/compose.js $JOB video.js
+// Run: $FR/run.sh $JOB /fr/scripts/cards.js video.js && node $FR/compose.js $JOB video.js
 module.exports = {
   layout: "portrait",
   theme: { bg: "#F4F4F1", ink: "#1F2937", sub: "#6B7280", dark: "#111827", accent: "#F59E0B", ft: "Inter", fb: "Inter" },
